@@ -13,6 +13,7 @@ export const astOperator = (value: Operators): ASTOperator => ({
 })
 
 export const astNumberWithUnit = (value: string): ASTNumberWithUnit => {
+    const valueWithoutUnit = /^\d+[\.|,]?\d+|^\d+/.exec(value)![0]
     const isFloat = /[\.]|[,]/g.test(value);
     const isInt = !isFloat;
     const isUnit = /[a-zA-Z]+$/.test(value)
@@ -22,10 +23,16 @@ export const astNumberWithUnit = (value: string): ASTNumberWithUnit => {
 
     return {
         type: ASTTypes.NUMEBR_WITH_UNIT,
-        value,
+        value: valueWithoutUnit,
         isFloat,
         isInt,
         isUnit,
         ...unit
     }
 }
+
+export const bracketsOpen: Brackets[] = ['(', '[', '{']
+export const bracketsClose: Brackets[] = [')', ']', '}']
+
+export const brakets: Brackets[] = [...bracketsOpen, ...bracketsClose]
+export const operators: Operators[] = ['+', '-', '*', '/', '%', '^']

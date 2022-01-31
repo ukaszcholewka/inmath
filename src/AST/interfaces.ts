@@ -8,7 +8,7 @@ export enum ASTTypes {
 }
 
 export type Operators = '+' | '-' | '*' | '/' | '%' | '^'
-export type Brackets = '(' | ')'
+export type Brackets = '(' | ')' | '[' | ']' | '{' | '}'
 
 export interface ASTMath {
     type: ASTTypes.MATH;

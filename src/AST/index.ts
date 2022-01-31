@@ -1,5 +1,5 @@
 import { ASTTypes, ASTMath, Operators, Brackets, ASTNode, ASTBody, ASTBraket } from './interfaces'
-import { astBraket, astOperator, astNumberWithUnit } from './constants'
+import { astBraket, astOperator, astNumberWithUnit, bracketsOpen, bracketsClose } from './constants'
 
 export default class AST {
     private _index = 0;
@@ -17,33 +17,40 @@ export default class AST {
     public exec = () => {
         let i = 0
 
-        while (this._index !== this._str.length) {
+        while (this._index < this._str.length) {    
             const { type, value } = this._parsePart()
-
-            if (type === ASTTypes.WHITE)
-                return;
 
             if (type === ASTTypes.BRAKET) {
                 this._parseBracket(value as Brackets)
+            }
+
+            if (type === ASTTypes.NUMEBR_WITH_UNIT) {
+                this._parent.body.push(astNumberWithUnit(value))
+            }
+
+            if (type === ASTTypes.OPERATOR) {
+                this._parent.body.push(astOperator(value as Operators))
             }
 
             if (i++ > 1337) {
                 throw new Error('Stuck in infinite loop')
             }
         }
+
+        console.log(this._ast)
     }
 
     private _parseBracket = (value: Brackets) => {
-
-        if (value === '(') {
+        if (bracketsOpen.includes(value)) {
             const node = astBraket(value, this._parent)
             this._parent.body.push(node)
             this._parent = node
             return;
         }
 
-        if (value === ')') {
+        if (bracketsClose.includes(value)) {
             this._parent = this._parent.parent!
+            return;
         }
     }
 
@@ -78,11 +85,11 @@ export default class AST {
 
     private get rules() {
         return {
-            isNumberWithOrWithoutUnit: /^\d+[a-zA-Z]*/,
-            isNumber: /^\d+/,
+            isNumberWithOrWithoutUnit: /^\d+[\.|,]?\d+[a-zA-Z]*|^\d+[a-zA-Z]*/,
+            isNumber: /^\d+[\.|,]?\d+/,
             isUnit: /^[a-zA-Z]+/,
             isOperator: /^[\+\-\*\/\^\%]/,
-            isBracket: /^[()]/,
+            isBracket: /^[(){}\[\]]/,
             isWhite: /^\s+/
         }
     }
