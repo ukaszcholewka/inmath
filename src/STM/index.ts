@@ -1,3 +1,5 @@
+// String To Math
+
 export default class STM {
     private _factor = 0
     private _value = 0n;

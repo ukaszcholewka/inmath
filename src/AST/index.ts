@@ -1,3 +1,5 @@
+// Abstract Syntax Tree
+
 import { ASTTypes, ASTMath, Operators, Brackets, ASTNode, ASTBody, ASTBraket } from '../interfaces'
 import { astBraket, astOperator, astNumberWithUnit, bracketsOpen, bracketsClose } from './constants'
 
