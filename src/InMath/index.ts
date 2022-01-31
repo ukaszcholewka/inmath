@@ -1,15 +1,19 @@
 import AST from '../AST'
+import NPU from '../NPU'
 
 export interface IOptions {
     onEnter?: boolean;
+    onBlur?: boolean;
 }
 
 const DEFAULT_OPTIONS: IOptions = {
-    onEnter: false
+    onEnter: false,
+    onBlur: true
 }
 
 export default class InMath {
     private static AST = AST;
+    private static NPU = NPU;
     private _options: IOptions;
     
     public constructor (
@@ -21,9 +25,10 @@ export default class InMath {
     }
 
     private _events() {
-        const { onEnter } = this._options
+        const { onEnter, onBlur } = this._options
 
-        this._input.addEventListener('blur', this._exec)
+        if (onBlur)
+            this._input.addEventListener('blur', this._exec)
         
         if (!onEnter)
             return;
@@ -43,6 +48,7 @@ export default class InMath {
         if (!value || value.trim() === '')
             return;
 
-        new InMath.AST(value)
+        const ast = new InMath.AST(value)
+        const result = new InMath.NPU(ast.exec())
     }
 }

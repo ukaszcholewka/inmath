@@ -1,4 +1,4 @@
-import { ASTTypes, ASTMath, Operators, Brackets, ASTNode, ASTBody, ASTBraket } from './interfaces'
+import { ASTTypes, ASTMath, Operators, Brackets, ASTNode, ASTBody, ASTBraket } from '../interfaces'
 import { astBraket, astOperator, astNumberWithUnit, bracketsOpen, bracketsClose } from './constants'
 
 export default class AST {
@@ -14,30 +14,26 @@ export default class AST {
         this.exec()
     }
 
-    public exec = () => {
+    public exec = (): ASTMath => {
         let i = 0
 
         while (this._index < this._str.length) {    
             const { type, value } = this._parsePart()
 
-            if (type === ASTTypes.BRAKET) {
+            if (type === ASTTypes.BRAKET)
                 this._parseBracket(value as Brackets)
-            }
 
-            if (type === ASTTypes.NUMEBR_WITH_UNIT) {
+            if (type === ASTTypes.NUMEBR_WITH_UNIT)
                 this._parent.body.push(astNumberWithUnit(value))
-            }
 
-            if (type === ASTTypes.OPERATOR) {
+            if (type === ASTTypes.OPERATOR)
                 this._parent.body.push(astOperator(value as Operators))
-            }
 
-            if (i++ > 1337) {
+            if (i++ > 1337)
                 throw new Error('Stuck in infinite loop')
-            }
         }
 
-        console.log(this._ast)
+        return this._ast
     }
 
     private _parseBracket = (value: Brackets) => {
